@@ -3,6 +3,16 @@ import mido
 import serial
 import sys
 
+def check_arg():
+    # Lee los argumentos de la línea de comandos
+    argument = sys.argv[1:]
+
+    if len(argument) != 1:
+        print("Error: only 1 song needed")
+        sys.exit(1)
+    else:
+        return argument[0]
+
 def midi_to_notes(file_path):
 
     midi = converter.parse(file_path)
@@ -61,7 +71,7 @@ def extract_tempo(file_path):
         for msg in track:
             if msg.type == 'set_tempo':
                 tempo = mido.tempo2bpm(msg.tempo)
-                return tempo
+                return [tempo]
     return None
 
 def send_notes(notes):
@@ -75,28 +85,22 @@ def send_notes(notes):
     # Cierra la conexión
     ser.close()
 
-def check_arg():
-    # Lee los argumentos de la línea de comandos
-    argument = sys.argv[1:]
-
-    if len(argument) != 1:
-        print("Error: only 1 song needed")
-        sys.exit(1)
-    else:
-        return argument[0]
 
 # Usage
 file_path = check_arg()
 notes = midi_to_notes(file_path)
 notes_clave_sol = convert_to_clave_de_sol(notes)
-print(notes_clave_sol)
-
+#print(notes_clave_sol)
 notas_numeros = convert_clave_sol_to_numbers(notes_clave_sol)
-print(notas_numeros)
+#print(notas_numeros)
 
 tempo = extract_tempo(file_path)
-
 if tempo:
     print(f"El tempo del archivo MIDI es: {tempo} BPM")
 else:
     print("No se encontró información de tempo en el archivo MIDI.")
+
+notes_message = tempo + notas_numeros
+print(notes_message)
+#send_notes(notes_message)
+
