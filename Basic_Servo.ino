@@ -56,18 +56,19 @@ int servo8_opened = 90;
 
 BluetoothSerial SerialBT;
 
-int song1[] = {E,E,F,G,G,F,E,D,C,C,D,E,E,D,D,E,E,F,G,G,F,E,D,C,C,D,E,D,C,C}; // Ode to Joy
-int song2[] = {C,C,C,C,C,C};
+int song1[] = {E,E,F,G,G,F,E,D,C,C,D,E,E,D,D,E,E,F,G,G,F,E,D,C,C,D,E,D,C,C}; // Ode to Joy (C major)
+int song1_times[] = {1,1,1,1,1,1,1,1,1,1,1,1,1.5,0.5,2,1,1,1,1,1,1,1,1,1,1,1,1,1.5,0.5,2};
+int song1_bpm = 120;
+
+int song2[] = {E,E,E,C,G,E,C,G,E}; // The imperial march
+int song2_times[] = {1,1,1,0.75,0.25,1,1.5,0.25,2};
+int song2_bpm = 60;
+
 int song3[] = {C,C,C,C,C,C};
 int song4[] = {C,C,C,C,C,C};
 
-int bpm = 60;
 
-int sleeptime;
-int note_counter;
-int note;
-int number_of_notes;
-int bt_data;
+int sleeptime, wait_time, init_time, note_counter, note, number_of_notes, bt_data, bpm;
 bool start;
 
 void play_C(){
@@ -221,28 +222,46 @@ void setup() {
   SerialBT.begin("Virtuoso");
 
   note_counter = 0;
-  int note = song1[note_counter];
   number_of_notes = sizeof(song1) / sizeof(song1[0]);
-  sleeptime = (60.0/bpm) * 1000;
+  int number_of_times = sizeof(song1_times) / sizeof(song1_times[0]);
+
+  if (number_of_notes != number_of_times){
+    Serial.println("ERROR. Sizes of notes and durations arrays don't match");
+    delay(100000);
+  }
+
+  wait_time = 0;
+  init_time = 0;
+
+  bpm = song1_bpm;
+  sleeptime = (60.0/bpm) * 1000.0;
+
   start = false;
 
+  Serial.print("sleeptime: ");
   Serial.println(sleeptime);
 
   Serial.println("Starting...");
 }
 
 void loop() {
-  
+
   if (start){
     if (note_counter < number_of_notes){
-      set_servos(note);
-      Serial.println(note);
-      note = song1[++note_counter];
-      delay(sleeptime);
+      if ((millis() - init_time) >= wait_time){
+        note = song1[note_counter];
+        set_servos(note);
+        Serial.print("Note: ");
+        Serial.println(note);
+        wait_time = sleeptime*song1_times[note_counter];
+        init_time = millis();
+        note_counter++;
+      }
     }
     
     else {
       Serial.println("END");
+      delay(1000);
     }
   }
 
