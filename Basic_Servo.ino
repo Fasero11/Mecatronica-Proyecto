@@ -57,28 +57,96 @@ int number_of_notes;
 
 void play_C(){
   servo0.write(servo0_closed);
+  servo1.write(servo1_closed);
+  servo2.write(servo2_closed);
+  servo3.write(servo3_closed);
+  servo4.write(servo4_closed);
+  servo5.write(servo5_closed);
+  servo6.write(servo6_closed);
+  servo7.write(servo7_closed);
+  servo8.write(servo8_closed);
+
+}
+
+void play_D(){
+  servo0.write(servo0_opened);
+  servo1.write(servo1_closed);
+  servo2.write(servo2_closed);
+  servo3.write(servo3_closed);
+  servo4.write(servo4_closed);
+  servo5.write(servo5_closed);
+  servo6.write(servo6_closed);
+  servo7.write(servo7_closed);
+  servo8.write(servo8_closed);
+}
+
+void play_E(){
+  servo0.write(servo0_opened);
+  servo1.write(servo1_opened);
+  servo2.write(servo2_closed);
+  servo3.write(servo3_closed);
+  servo4.write(servo4_closed);
+  servo5.write(servo5_closed);
+  servo6.write(servo6_closed);
+  servo7.write(servo7_closed);
+  servo8.write(servo8_closed);
+}
+void play_F(){
+  servo0.write(servo0_opened);
+  servo1.write(servo1_opened);
+  servo2.write(servo2_opened);
+  servo3.write(servo3_closed);
+  servo4.write(servo4_closed);
+  servo5.write(servo5_closed);
+  servo6.write(servo6_closed);
+  servo7.write(servo7_closed);
+  servo8.write(servo8_closed); 
+}
+void play_G(){
+  servo0.write(servo0_opened);
+  servo1.write(servo1_opened);
+  servo2.write(servo2_opened);
+  servo3.write(servo3_opened);
+  servo4.write(servo4_closed);
+  servo5.write(servo5_closed);
+  servo6.write(servo6_closed);
+  servo7.write(servo7_closed);
+  servo8.write(servo8_closed);  
+}
+void play_A(){
+  servo0.write(servo0_opened);
+  servo1.write(servo1_opened);
+  servo2.write(servo2_opened);
+  servo3.write(servo3_opened);
+  servo4.write(servo4_opened);
+  servo5.write(servo5_closed);
+  servo6.write(servo6_closed);
+  servo7.write(servo7_closed);
+  servo8.write(servo8_closed); 
+}
+void play_B(){
+  servo0.write(servo0_opened);
+  servo1.write(servo1_opened);
+  servo2.write(servo2_opened);
+  servo3.write(servo3_opened);
+  servo4.write(servo4_opened);
+  servo5.write(servo5_opened);
+  servo6.write(servo6_closed);
+  servo7.write(servo7_closed);
+  servo8.write(servo8_closed);   
+}
+
+void play_C2(){
+  servo0.write(servo0_opened);
   servo1.write(servo1_opened);
   servo2.write(servo2_opened);
   servo3.write(servo3_opened);
   servo4.write(servo4_opened);
   servo5.write(servo5_opened);
   servo6.write(servo6_opened);
-  servo7.write(servo7_opened);
-  servo8.write(servo8_opened);
+  servo7.write(servo7_closed);
+  servo8.write(servo8_closed);   
 }
-
-void play_D(){
-  servo0.write(servo0_closed);
-  servo1.write(servo1_closed);
-  servo2.write(servo2_opened);
-  servo3.write(servo3_opened);
-  servo4.write(servo4_opened);
-  servo5.write(servo5_opened);
-  servo6.write(servo6_opened);
-  servo7.write(servo7_opened);
-  servo8.write(servo8_opened);  
-}
-
 
 void set_servos(int note){
   switch (note)
@@ -89,6 +157,30 @@ void set_servos(int note){
 
       case 1:
         play_D();
+        break;
+
+      case 3:
+        play_E();
+        break;
+
+      case 4:
+        play_F();
+        break;
+
+      case 5:
+        play_G();
+        break;
+
+      case 6:
+        play_A();
+        break;
+        
+      case 7:
+        play_B();
+        break;
+
+      case 8:
+        play_C2();
         break;
   }
 }
