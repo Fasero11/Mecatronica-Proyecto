@@ -15,6 +15,15 @@
 #define PIN_SERVO7 2
 #define PIN_SERVO8 15
 
+#define C 0
+#define D 1
+#define E 2
+#define F 3
+#define G 4
+#define A 5
+#define B 6
+#define C2 7
+
 Servo servo0;
 Servo servo1;
 Servo servo2;
@@ -47,10 +56,10 @@ int servo8_opened = 90;
 
 BluetoothSerial SerialBT;
 
-int song1[] = {0,1,0,0,0,1,1,0,1};
-int song2[] = {0,1,0,0,0,1,1,0,1};
-int song3[] = {0,1,0,0,0,1,1,0,1};
-int song4[] = {0,1,0,0,0,1,1,0,1};
+int song1[] = {E,E,F,G,G,F,E,D,C,C,D,E,E,D,D,E,E,F,G,G,F,E,D,C,C,D,E,D,C,C}; // Ode to Joy
+int song2[] = {C,C,C,C,C,C};
+int song3[] = {C,C,C,C,C,C};
+int song4[] = {C,C,C,C,C,C};
 
 int bpm = 60;
 
@@ -165,27 +174,27 @@ void set_servos(int note){
         play_D();
         break;
 
-      case 3:
+      case 2:
         play_E();
         break;
 
-      case 4:
+      case 3:
         play_F();
         break;
 
-      case 5:
+      case 4:
         play_G();
         break;
 
-      case 6:
+      case 5:
         play_A();
         break;
         
-      case 7:
+      case 6:
         play_B();
         break;
 
-      case 8:
+      case 7:
         play_C2();
         break;
   }
@@ -239,7 +248,7 @@ void loop() {
 
   if(SerialBT.available()){
     bt_data = SerialBT.read();
-    Serial.println(bt_data);
+    //Serial.println(bt_data);
 
     if (bt_data == 49){
       //RESET
