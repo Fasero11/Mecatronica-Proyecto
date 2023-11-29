@@ -1,6 +1,10 @@
 #include <ESP32Servo.h>
 #include <BluetoothSerial.h>
 
+
+// ONLY WORKS IN C MAJOR.
+
+
 #define PIN_SERVO0 23
 #define PIN_SERVO1 22
 #define PIN_SERVO2 21
@@ -20,15 +24,6 @@ Servo servo5;
 Servo servo6;
 Servo servo7;
 Servo servo8;
-
-BluetoothSerial SerialBT;
-
-int song1[] = {0,1,0,0,0,1,1,0,1};
-int song2[] = {0,1,0,0,0,1,1,0,1};
-int song3[] = {0,1,0,0,0,1,1,0,1};
-int song4[] = {0,1,0,0,0,1,1,0,1};
-
-int bpm = 60;
 
 int servo0_closed = 110;
 int servo0_opened = 90;
@@ -50,10 +45,21 @@ int servo8_closed = 110;
 int servo8_opened = 90;
 
 
+BluetoothSerial SerialBT;
+
+int song1[] = {0,1,0,0,0,1,1,0,1};
+int song2[] = {0,1,0,0,0,1,1,0,1};
+int song3[] = {0,1,0,0,0,1,1,0,1};
+int song4[] = {0,1,0,0,0,1,1,0,1};
+
+int bpm = 60;
+
 int sleeptime;
-int note_counter = 0;
+int note_counter;
 int note;
 int number_of_notes;
+int bt_data;
+bool start;
 
 void play_C(){
   servo0.write(servo0_closed);
@@ -185,6 +191,11 @@ void set_servos(int note){
   }
 }
 
+void reset(){
+  note_counter = 0;
+  int note = song1[note_counter];
+}
+
 void setup() {
   Serial.begin(115200);
 
@@ -198,25 +209,52 @@ void setup() {
   servo7.attach(PIN_SERVO7);
   servo8.attach(PIN_SERVO8);
 
-  Serial.begin(9600);
   SerialBT.begin("Virtuoso");
 
+  note_counter = 0;
   int note = song1[note_counter];
   number_of_notes = sizeof(song1) / sizeof(song1[0]);
   sleeptime = (60.0/bpm) * 1000;
+  start = false;
+
   Serial.println(sleeptime);
+
+  Serial.println("Starting...");
 }
 
 void loop() {
-  if (note_counter < number_of_notes){
-    set_servos(note);
-    Serial.println(note);
-    note = song1[++note_counter];
-    delay(sleeptime);
-  }
   
-  else {
-    Serial.println("END");
+  if (start){
+    if (note_counter < number_of_notes){
+      set_servos(note);
+      Serial.println(note);
+      note = song1[++note_counter];
+      delay(sleeptime);
+    }
+    
+    else {
+      Serial.println("END");
+    }
   }
 
+  if(SerialBT.available()){
+    bt_data = SerialBT.read();
+    Serial.println(bt_data);
+
+    if (bt_data == 49){
+      //RESET
+      Serial.println("RESET");
+      reset();
+    }
+    if (bt_data == 50){
+      // START
+      Serial.println("START");
+      start = true;
+    }
+    if (bt_data == 51){
+      // STOP
+      Serial.println("STOP");
+      start = false;
+    }
+  }
 }
