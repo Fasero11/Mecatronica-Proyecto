@@ -14,14 +14,14 @@
 #define F 3
 #define G 4
 
-int servo0_opened = 80;
-int servo0_closed = 100;
+int servo0_opened = 90;
+int servo0_closed = 105;
 
 int servo1_opened = 95;
 int servo1_closed = 120;
 
-int servo2_opened = 100;
-int servo2_closed = 150;
+int servo2_opened = 120;
+int servo2_closed = 152;
 
 int servo3_opened = 110;
 int servo3_closed = 120;
@@ -32,11 +32,17 @@ Servo servo2;
 Servo servo3;
 
 int note;
-
+/*
 int song[] = {E,E,E,C,G,E,C,G,E}; // The imperial march
 float song_times[] = {1,1,1,0.75,0.25,1,0.75,0.25,2};
-int song_bpm = 60;
+int song_bpm = 30;
 int number_of_notes = 9;
+*/
+
+int song[] = {E,E,F,G,G,F,E,D,C,C,D,E,E,D,D,E,E,F,G,G,F,E,D,C,C,D,E,D,C,C}; // Ode to Joy (C major)
+float song_times[] = {1,1,1,1,1,1,1,1,1,1,1,1,1.5,0.5,2,1,1,1,1,1,1,1,1,1,1,1,1,1.5,0.5,2};
+int song_bpm = 80;
+int number_of_notes = 30;
 
 int note_counter, sleeptime, init_time, wait_time;
 
@@ -120,12 +126,10 @@ void setup() {
 
   Serial.println("start...");
   delay(2000);
-  Serial.println("GO");
-  delay(1000);
 }
 
 void loop() {
-  if (note_counter <= number_of_notes){
+  if (note_counter < number_of_notes){
     if ((millis() - init_time) >= wait_time){
       note = song[note_counter];
       play_note(note);
