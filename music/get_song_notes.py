@@ -1,5 +1,5 @@
 import serial
-from music21 import converter, instrument, note, stream, chord
+from music21 import converter, instrument, note, stream, chord, meter
 import mido
 import sys
 
@@ -13,9 +13,9 @@ def check_arg():
     else:
         return argument[0]
 
-def midi_to_notes(file_path):
+def midi_to_notes(midi_file):
 
-    midi = converter.parse(file_path)
+    midi = converter.parse(midi_file)
     notes_to_parse = None
 
     try: # File has instrument parts
@@ -65,8 +65,8 @@ def convert_clave_sol_to_numbers(notes):
             converted_notes.append(equivalence_table[note])
     return converted_notes
 
-def extract_tempo(file_path):
-    mid = mido.MidiFile(file_path)
+def extract_tempo(midi_file):
+    mid = mido.MidiFile(midi_file)
     for track in mid.tracks:
         for msg in track:
             if msg.type == 'set_tempo':
@@ -74,24 +74,47 @@ def extract_tempo(file_path):
                 return tempo
     return None
     
+def obtener_duraciones_notas(archivo_midi):
+
+    
+    # Cargar el archivo MIDI
+    midi_stream = converter.parse(archivo_midi)
+
+    # Obtener el objeto Part del flujo MIDI
+    part = midi_stream.parts[0] if midi_stream.parts else midi_stream
+
+    duraciones_notas = []
+    for elemento in part.flat.notesAndRests:
+        # Calcular la duración de cada elemento en segundos
+        duracion_segundos = elemento.seconds
+        duraciones_notas.append({
+            'nota': str(elemento.pitch) if hasattr(elemento, 'pitch') else 'Resto',
+            'duracion': elemento.quarterLength,
+            'duracion_segundos': duracion_segundos
+        })
+
+    return duraciones_notas
 
 # Usage
-file_path = check_arg()
-notes = midi_to_notes(file_path)
+midi_file = check_arg()
+notes = midi_to_notes(midi_file)
 notes_clave_sol = convert_to_clave_de_sol(notes)
-print(notes_clave_sol)
 notas_numeros = convert_clave_sol_to_numbers(notes_clave_sol)
 print(notas_numeros)
 
-tempo = extract_tempo(file_path)
+tempo = extract_tempo(midi_file)
+duraciones_notas = obtener_duraciones_notas(midi_file)
+
 if tempo:
     print(f"El tempo del archivo MIDI es: {tempo} BPM")
 else:
     print("No se encontró información de tempo en el archivo MIDI.")
 
-#notes_message = tempo + notas_numeros
-tempo_msg = "Tempo: " + str(tempo)
-print(tempo_msg)
+if duraciones_notas is not None:
+    for nota in duraciones_notas:
+        print(f"Nota: {nota['nota']} - Duración: {nota['duracion']} pulsos - Duración en segundos: {nota['duracion_segundos']} s")
+else:
+    print("No se pudieron obtener las duraciones de las notas.")
 
 
 # Abre la conexión con el puerto serie
